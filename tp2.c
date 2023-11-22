@@ -275,10 +275,16 @@ int condition() {
     }
 }
 
-void print_fila(Fila *F)
-{
+void print_fila(Fila *F) {
    for (FilaNode *f = F->front; f != NULL; f = f->next)
       printf("%d ", f->id);
+
+   printf("\n");
+}
+
+void print_fila_registro(Fila *F) {
+   for (FilaNode *f = F->front; f != NULL; f = f->next)
+      printf("%d\n%d\n%d\n ", f->registro->id, f->registro->tempo, f->registro->condition);
 
    printf("\n");
 }

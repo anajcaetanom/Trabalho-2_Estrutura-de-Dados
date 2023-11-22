@@ -54,4 +54,6 @@ void print_paciente(Paciente *p);
 
 void print_lista(Lista *l);
 
+void print_fila_registro(Fila *F);
+
 #endif
