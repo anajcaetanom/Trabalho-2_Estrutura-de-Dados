@@ -8,59 +8,50 @@
 
 int main() {
 
-    char nomeArquivo[30], nome[30], cpf[15];
+    char nomeArquivo[30], nome[30], cpf[20];
     int idade;
     int id, uT = 0;
     
     Lista *lista_de_pacientes = create_lista(); // Criação da lista de pacientes.
     Fila *fila_para_exame = create_fila(); // Criação da fila para exame.
     
+    uT++; // Incremento na unidade de tempo.
+
     // Abrindo o arquivo e armazenando os dados.
     printf("Insira nome do arquivo (com a extensão): ");
     scanf("%s", nomeArquivo);
     FILE *arquivo = fopen(nomeArquivo, "r");
 
+    if (arquivo == NULL) {
+        puts("Erro ao abrir arquivo.");
+        exit(EXIT_FAILURE);
+    }
 
+    uT++; // Incremento na unidade de tempo.
 
-    while (fscanf(arquivo, "%30[^\n]\n%d\n%15[^\n]\n", nome, &idade, cpf) == 3) {
+    /* CHEGADA DE PACIENTES */
+    while (fscanf(arquivo, "%30[^\n]\n%15[^\n]\n%d\n", nome, cpf, &idade) == 3) {
         srand(time(NULL));
-        if (((rand() % 5) + 1) == 2 && ((rand() % 5) + 1) == 1) { // Probabilidade de 20% de chegar um paciente. 
-            id++;
-            Paciente *paciente = novo_paciente(nome, cpf, idade, id); // Criação de paciente.
-            add_no_inicio(lista_de_pacientes, paciente); // Inserção do paciente na lista de pacientes.
-            enfileirar_id(fila_para_exame, id); // Inserção do id na fila para exame.
-        }
-    }
 
-    Aparelho *aparelhos = create_array(); // Criação de uma array com 5 aparelhos disponíveis.
-
-    for (int i = 0; i < 5; i++) {
-
-        if ((get_occupation(aparelhos, i)) == 0) {
+        do {
             srand(time(NULL));
-            int id;
-            int i = 0; 
-            int tempo_de_exame = rand() % 6 + 5;
-            change_occupation(aparelhos, i, 1); // Muda ocupação para "1" (ocupado).
+            uT++; // Incremento na unidade de tempo.
+            printf("%d\n", uT);
+        } while (!(rand() % 10 + 1 <= 2)); // Probabilidade de 20% de chegar um paciente. 
             
-            id = desenfileirar(fila_para_exame);
-            printf("Paciente com o id %d retirado da fila para exame.", id);
+        id++;
+        Paciente *paciente = novo_paciente(nome, cpf, idade, id); // Criação de paciente.
+        add_no_inicio(lista_de_pacientes, paciente); // Inserção do paciente na lista de pacientes.
+        free(paciente);
+        print_lista(lista_de_pacientes);
 
-            do {
-
-            } while (i <= tempo_de_exame);
-            puts("Exame finalizado.");
-
-            Registro *registro = create_registro(id, tempo, condition());
-
+        enfileirar_id(fila_para_exame, id); // Inserção do id na fila para exame.
+        print_fila(fila_para_exame);
         
-        }
+        uT++; // Incremento na unidade de tempo.
     }
 
-    
-    
+    free(arquivo);
 
-
-
-
+   
 }

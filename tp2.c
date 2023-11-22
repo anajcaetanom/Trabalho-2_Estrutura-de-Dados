@@ -14,9 +14,9 @@ struct _paciente {
 };
 
 struct _node {
-    struct Paciente *dados;
-    struct _node *prev; 
-    struct _node *next; 
+    Paciente *dados;
+    Node *prev; 
+    Node *next; 
 };
 
 struct _list {
@@ -36,7 +36,7 @@ struct _fila {
     FilaNode *rear;
 };
 
-struct _aparelho {
+struct _occupation {
     int occupation;
 };
 
@@ -46,10 +46,14 @@ struct _registro {
     int condition;
 };
 
-
 // Criação de novo paciente.
 Paciente *novo_paciente(const char nome[], const char cpf[], const int idade, const int id) {
     Paciente *novoPaciente = (Paciente*) calloc(1, sizeof(Paciente));
+
+    if (novoPaciente == NULL) {
+        puts("Falha na alocação de novo paciente.");
+        exit(EXIT_FAILURE);
+    }
 
     strcpy(novoPaciente->nome, nome);
     strcpy(novoPaciente->cpf, cpf);
@@ -62,6 +66,12 @@ Paciente *novo_paciente(const char nome[], const char cpf[], const int idade, co
 // Cria nó com o paciente novo.
 Node *create_node(Paciente *novoPaciente) {
     Node *new_node = (Node*) calloc(1, sizeof(Node));
+
+    if (new_node == NULL) {
+        puts("Falha na alocação de novo nó.");
+        exit(EXIT_FAILURE);
+    }
+    
     new_node->prev = NULL;
     new_node->next = NULL;
     new_node->dados = novoPaciente;
@@ -72,6 +82,12 @@ Node *create_node(Paciente *novoPaciente) {
 // Cria lista (vazia).
 Lista *create_lista() {
     Lista *nova_lista = (Lista*) calloc(1, sizeof(Lista));
+
+    if (nova_lista == NULL) {
+        puts("Falha na alocação de nova lista.");
+        exit(EXIT_FAILURE);
+    }
+
     nova_lista->begin = NULL;
     nova_lista->end = NULL;
     nova_lista->size = 0;
@@ -82,6 +98,12 @@ Lista *create_lista() {
 // Cria fila (vazia).
 Fila *create_fila() {
     Fila *F = (Fila*) calloc(1, sizeof(Fila));
+
+    if (F == NULL) {
+        puts("Falha na alocação de nova fila.");
+        exit(EXIT_FAILURE);
+    }
+
     F->front = F->rear = NULL;
 
     return F;
@@ -100,6 +122,12 @@ bool fila_is_empty(const Fila *F) {
 // Adiciona elemento no começo da lista.
 void add_no_inicio(Lista *L, Paciente *novoPaciente) {
     Node *n = create_node(novoPaciente);
+
+    if (n == NULL) {
+        puts("Falha na alocação de novo nó (add_no_inicio).");
+        exit(EXIT_FAILURE);
+    }
+
     n->next = L->begin;
 
     if (list_is_empty(L)) {
@@ -115,8 +143,14 @@ void add_no_inicio(Lista *L, Paciente *novoPaciente) {
 // Adiciona id no final da fila.
 void enfileirar_id(Fila *F, int id) {
     FilaNode *node = (FilaNode*) calloc(1, sizeof(FilaNode));
+
+    if (node == NULL) {
+        puts("Falha na alocação de novo nó (enfileirar_id).");
+        exit(EXIT_FAILURE);
+    }
+
     node->id = id;
-    node->registro == NULL;
+    node->registro = NULL;
     node->next = NULL;
 
     if (fila_is_empty(F))
@@ -129,8 +163,14 @@ void enfileirar_id(Fila *F, int id) {
 
 void enfileirar_registro(Fila *F, Registro *registro) {
     FilaNode *node = (FilaNode*) calloc(1, sizeof(FilaNode));
-    node->id = NULL;
-    node->registro == registro;
+
+    if (node == NULL) {
+        puts("Falha na alocação de novo nó (enfileirar_registro).");
+        exit(EXIT_FAILURE);
+    }
+
+    node->id = 0;
+    node->registro = registro;
     node->next = NULL;
 
     if (fila_is_empty(F))
@@ -175,6 +215,12 @@ void desenfileirar_registro(Fila *F) {
 
 Registro *create_registro(const int id, const int tempo, const int condition) {
     Registro *registro = (Registro*) calloc(1, sizeof(Registro));
+
+    if (registro == NULL) {
+        puts("Falha na alocação de novo registro.");
+        exit(EXIT_FAILURE);
+    }
+
     registro->id = id;
     registro->tempo = tempo;
     registro->condition = condition;
@@ -182,33 +228,35 @@ Registro *create_registro(const int id, const int tempo, const int condition) {
     return registro;
 }
 
-Aparelho *create_array() {
-    int tamanho_array = 5;
-    Aparelho *aparelhos = (Aparelho*) calloc(tamanho_array, sizeof(Aparelho));
+Occupation *create_array(int tamanho) {
+    Occupation *aparelhos = (Occupation*) calloc(tamanho, sizeof(Occupation));
 
-    for (int i = 0; i < tamanho_array; i++) {
-        aparelhos[i].ocupation = 0;
+    if (aparelhos == NULL) {
+        puts("Falha na alocação de novo array.");
+        exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i < tamanho; i++) {
+        aparelhos[i].occupation = 0;
     }
 
     return aparelhos;
 }   
 
-int get_occupation(Aparelho *aparelhos, const int i) {
-    return aparelhos[i].occupation;
+int get_occupation(Occupation *estrutura, const int i) {
+    return estrutura[i].occupation;
 }
 
-void change_occupation(Aparelho *aparelhos, const int i, int new_ocupation) {
-    aparelhos[i].occupation = new_ocupation;
+void change_occupation(Occupation *estrutura, const int i, int new_ocupation) {
+    estrutura[i].occupation = new_ocupation;
 }
 
 int condition() {
-    srand(time(NULL));
     int n = rand() % 100 + 1;
     int prob1 =  30;
     int prob2 =  50;
     int prob3 =  70;
     int prob4 =  85;
-    int prob5 =  100;
 
     if (n <= prob1) {
         return 1;
@@ -227,6 +275,34 @@ int condition() {
     }
 }
 
+void print_fila(Fila *F)
+{
+   for (FilaNode *f = F->front; f != NULL; f = f->next)
+      printf("%d ", f->id);
 
+   printf("\n");
+}
 
+void print_paciente(Paciente *p) {
+    char nome[30];
+    char cpf[20];
+    int idade;
+    int id;
+    
+    strcpy(nome, p->nome);
+    strcpy(cpf, p->cpf);
+    idade = p->idade;
+    id = p->id;
+    
+    printf("Nome: %s\nCPF: %s\nIdade: %d\nID: %d\n", nome, cpf, idade, id);
+}
+
+void print_lista(Lista *l)
+{
+   for (Node *p = l->begin; p != NULL; p = p->next)
+   {
+      print_paciente(p->dados); 
+   }
+   printf("\n"); 
+}
 

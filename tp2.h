@@ -10,7 +10,7 @@ typedef struct _list Lista;
 typedef struct _fila Fila;
 typedef struct _fila_node FilaNode;
 
-typedef struct _aparelho Aparelho;
+typedef struct _occupation Occupation;
 
 typedef struct _fila_node_registro NodeRegistro;
 typedef struct _fila_registro FilaRegistro;
@@ -32,16 +32,26 @@ void add_no_inicio(Lista *L, Paciente *novoPaciente);
 
 void enfileirar_id(Fila *F, int id);
 
-int desenfileirar(Fila *F);
+void enfileirar_registro(Fila *F, Registro *registro);
+
+int desenfileirar_id(Fila *F);
+
+void desenfileirar_registro(Fila *F);
 
 Registro *create_registro(const int id, const int tempo, const int condition);
 
-Aparelho *create_array();
+Occupation *create_array(int tamanho);
 
-int get_occupation(Aparelho *aparelhos, const int i);
+int get_occupation(Occupation *estrutura, const int i);
 
-void change_occupation(Aparelho *aparelhos, const int i, int new_ocupation);
+void change_occupation(Occupation *estrutura, const int i, int new_ocupation);
 
 int condition();
+
+void print_fila(Fila *F);
+
+void print_paciente(Paciente *p);
+
+void print_lista(Lista *l);
 
 #endif
