@@ -5,7 +5,7 @@ CC = gcc
 CFLAGS = -Wall
 
 # Source files
-SRCS = main.c tp2.c tp2.h
+SRCS = main.c tp2.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)
