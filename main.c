@@ -9,10 +9,8 @@
 int main() {
     srand(time(NULL));
     char nomeArquivo[30], nome[30], cpf[20];
-    int idade;
+    int idade, r, tempo_de_exame, tempo, id_retirado;
     int id, uT = 0;
-    int r;
-    int tempo_de_exame;
     
     Lista *lista_de_pacientes = create_lista(); // Criação da lista de pacientes.
     Fila *fila_para_exame = create_fila(); // Criação da fila para exame.
@@ -42,11 +40,6 @@ int main() {
             }
 
         } while (!(r <= 2)); // Probabilidade de 20% de chegar um paciente. 
-        
-        if (uT > 43200) {
-            puts("Tempo máximo excedido.");
-            exit(EXIT_FAILURE);
-        }
 
         id++;
         Paciente *paciente = novo_paciente(nome, cpf, idade, id); // Criação de paciente.
@@ -54,13 +47,14 @@ int main() {
         free(paciente);
 
         enfileirar_id(fila_para_exame, id); // Inserção do id na fila para exame.
-
-        uT++;
-        printf("\n%d\n", uT);
         
+        if (uT > 43200) {
+            puts("Tempo máximo excedido.");
+            exit(EXIT_FAILURE);
+        }
     }
 
-    fclose(arquivo);
+    fclose(arquivo); // Fechar arquivo.
 
     Occupation *aparelhos = create_array(5); // Criação de uma array com 5 aparelhos disponíveis.
     Fila *fila_para_laudo = create_fila(); // Criação da fila para laudo (vazia).
@@ -75,18 +69,17 @@ int main() {
         /* REALIZAÇÃO DO EXAME DE RAIO-X */
         if ((get_occupation(aparelhos, i)) == 0) {
             tempo_de_exame = (rand() % 6 + 5);
-
+            id_retirado = desenfileirar_id(fila_para_exame);
             change_occupation(aparelhos, i, 1); // Muda ocupação para "1" (ocupado).
-            printf("Paciente com o id %d retirado da fila para exame.\n", desenfileirar_id(fila_para_exame));
 
             for (int j = 0; j <= tempo_de_exame; j++) {
                 uT++;
             }
             puts("Exame finalizado.");
 
-            int tempo = uT + tempo_de_exame;
+            tempo = uT + tempo_de_exame;
 
-            Registro *registro = create_registro(id, tempo, condition());
+            Registro *registro = create_registro(id_retirado, tempo, condition());
             enfileirar_registro(fila_para_laudo, registro);
             print_fila_registro(fila_para_laudo);
             uT = tempo;
@@ -95,7 +88,7 @@ int main() {
 
             uT++; // Incremento na unidade de tempo.
 
-            exit(0);
+            
         }
     }   
 

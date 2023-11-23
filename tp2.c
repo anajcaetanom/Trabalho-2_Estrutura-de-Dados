@@ -161,6 +161,7 @@ void enfileirar_id(Fila *F, int id) {
     F->rear = node;
 }
 
+// Adiciona registro no final da fila.
 void enfileirar_registro(Fila *F, Registro *registro) {
     FilaNode *node = (FilaNode*) calloc(1, sizeof(FilaNode));
 
@@ -198,11 +199,12 @@ int desenfileirar_id(Fila *F) {
    return id;
 }
 
+// Desenfileira registro.
 void desenfileirar_registro(Fila *F) {
 
    assert(!fila_is_empty(F));
 
-   FilaNode *f = F->front; // Store for removal
+   FilaNode *f = F->front; 
 
    if (F->front != F->rear)
       F->front = F->front->next;
@@ -213,6 +215,7 @@ void desenfileirar_registro(Fila *F) {
    
 }
 
+// Criação de registro.
 Registro *create_registro(const int id, const int tempo, const int condition) {
     Registro *registro = (Registro*) calloc(1, sizeof(Registro));
 
@@ -228,6 +231,7 @@ Registro *create_registro(const int id, const int tempo, const int condition) {
     return registro;
 }
 
+// Criação de array de structs.
 Occupation *create_array(int tamanho) {
     Occupation *aparelhos = (Occupation*) calloc(tamanho, sizeof(Occupation));
 
@@ -243,14 +247,17 @@ Occupation *create_array(int tamanho) {
     return aparelhos;
 }   
 
+// Retorna ocupação de struct que contenha ocupação.
 int get_occupation(Occupation *estrutura, const int i) {
     return estrutura[i].occupation;
 }
 
+// Altera ocupação.
 void change_occupation(Occupation *estrutura, const int i, int new_ocupation) {
     estrutura[i].occupation = new_ocupation;
 }
 
+// 
 int condition() {
     int n = rand() % 100 + 1;
     int prob1 =  30;
