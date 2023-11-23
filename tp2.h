@@ -38,7 +38,7 @@ int desenfileirar_id(Fila *F);
 
 void desenfileirar_registro(Fila *F);
 
-Registro *create_registro(const int id, const int tempo, const int condition);
+Registro *create_registro(const int id, const int tempo, const char condition[]);
 
 Occupation *create_array(int tamanho);
 

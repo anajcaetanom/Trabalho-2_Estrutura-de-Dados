@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <assert.h>
 
 
 struct _paciente {
@@ -43,7 +42,7 @@ struct _occupation {
 struct _registro {
     int id;
     int tempo;
-    int condition;
+    char condition[12];
 };
 
 // Criação de novo paciente.
@@ -185,18 +184,18 @@ void enfileirar_registro(Fila *F, Registro *registro) {
 // Retira elemento no início da fila e o retorna.
 int desenfileirar_id(Fila *F) {
 
-   assert(!fila_is_empty(F));
+    assert(!fila_is_empty(F));
 
-   int id = F->front->id;
-   FilaNode *f = F->front; // Store for removal
+    int id = F->front->id;
+    FilaNode *f = F->front; // Store for removal
 
-   if (F->front != F->rear)
-      F->front = F->front->next;
-   else
-      F->front = F->rear = NULL;
+    if (F->front != F->rear)
+        F->front = F->front->next;
+    else
+        F->front = F->rear = NULL;
 
-   free(f);
-   return id;
+    free(f);
+    return id;
 }
 
 // Desenfileira registro.
@@ -216,7 +215,7 @@ void desenfileirar_registro(Fila *F) {
 }
 
 // Criação de registro.
-Registro *create_registro(const int id, const int tempo, const int condition) {
+Registro *create_registro(const int id, const int tempo, const char condition[]) {
     Registro *registro = (Registro*) calloc(1, sizeof(Registro));
 
     if (registro == NULL) {
@@ -226,7 +225,9 @@ Registro *create_registro(const int id, const int tempo, const int condition) {
 
     registro->id = id;
     registro->tempo = tempo;
-    registro->condition = condition;
+    strcpy(registro->condition, condition);
+    
+   
 
     return registro;
 }
@@ -257,7 +258,7 @@ void change_occupation(Occupation *estrutura, const int i, int new_ocupation) {
     estrutura[i].occupation = new_ocupation;
 }
 
-// 
+// Retorna a patologia de acordo com suas probabilidades.
 int condition() {
     int n = rand() % 100 + 1;
     int prob1 =  30;
@@ -282,6 +283,7 @@ int condition() {
     }
 }
 
+// Função para imprimir fila para exame.
 void print_fila(Fila *F) {
    for (FilaNode *f = F->front; f != NULL; f = f->next)
       printf("%d ", f->id);
@@ -289,13 +291,16 @@ void print_fila(Fila *F) {
    printf("\n");
 }
 
+// Função para imprimir fila de laudo.
 void print_fila_registro(Fila *F) {
-   for (FilaNode *f = F->front; f != NULL; f = f->next)
-      printf("%d\n%d\n%d\n ", f->registro->id, f->registro->tempo, f->registro->condition);
+    puts("\n-------------FILA DE REGISTRO-------------");
+    for (FilaNode *f = F->front; f != NULL; f = f->next)
+        printf("\n!registro!\nID: %d\nTempo: %d\nCondição: %s\n\n", f->registro->id, f->registro->tempo, f->registro->condition);
 
    printf("\n");
 }
 
+// Função para imprimir struct Paciente.
 void print_paciente(Paciente *p) {
     char nome[30];
     char cpf[20];
@@ -310,8 +315,8 @@ void print_paciente(Paciente *p) {
     printf("Nome: %s\nCPF: %s\nIdade: %d\nID: %d\n", nome, cpf, idade, id);
 }
 
-void print_lista(Lista *l)
-{
+// Função para imprimir lista de pacientes.
+void print_lista(Lista *l) {
    for (Node *p = l->begin; p != NULL; p = p->next)
    {
       print_paciente(p->dados); 

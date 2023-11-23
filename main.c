@@ -8,7 +8,7 @@
 
 int main() {
     srand(time(NULL));
-    char nomeArquivo[30], nome[30], cpf[20];
+    char nomeArquivo[30], nome[30], cpf[20], c[12];
     int idade, r, tempo_de_exame, tempo, id_retirado;
     int id, uT = 0;
     
@@ -60,10 +60,6 @@ int main() {
     Fila *fila_para_laudo = create_fila(); // Criação da fila para laudo (vazia).
 
 
-
-
-                    //////////////testando///////////////
-
     for (int i = 0; i < 5; i++) {
 
         /* REALIZAÇÃO DO EXAME DE RAIO-X */
@@ -72,55 +68,57 @@ int main() {
             id_retirado = desenfileirar_id(fila_para_exame);
             change_occupation(aparelhos, i, 1); // Muda ocupação para "1" (ocupado).
 
-            for (int j = 0; j <= tempo_de_exame; j++) {
-                uT++;
-            }
+            for (int j = 0; j <= tempo_de_exame; j++) uT++;
+
             puts("Exame finalizado.");
 
             tempo = uT + tempo_de_exame;
 
-            Registro *registro = create_registro(id_retirado, tempo, condition());
-            enfileirar_registro(fila_para_laudo, registro);
+            if (condition() > 1) strcpy(c, "Patológica");  
+            else strcpy(c, "Normal"); 
+
+            Registro *registro = create_registro(id_retirado, tempo, c); 
+            enfileirar_registro(fila_para_laudo, registro); // Adiciona registro na fila para laudo.
             print_fila_registro(fila_para_laudo);
             uT = tempo;
 
             change_occupation(aparelhos, i, 0); // Muda ocupação para "0" (livre).
 
-            uT++; // Incremento na unidade de tempo.
-
-            
+            uT++; // Incremento na unidade de tempo.  
         }
     }   
 
-    //////////////n testei ainda///////////////
+    //////////////testando///////////////
 
     /* REALIZAÇÃO DE LAUDOS */
 
-    Occupation *radiologista = create_array(3);
+    Occupation *radiologista = create_array(3); //
 
     for (int i = 0; i < 3; i++) {
         if ((get_occupation(radiologista, i)) == 0) {
-            desenfileirar_registro;
 
-            // Preparação do laudo.
+            desenfileirar_registro(fila_para_laudo); // Tira registro da fila para laudo.
+
             int tempo_de_exame = rand() % 20 + 10;
+
             change_occupation(radiologista, i, 1); // Muda ocupação para "1" (ocupado).
 
-            do {
+            for (int j = 0; j <= tempo_de_exame; j++) uT++; // Preparação do laudo.
 
-            } while (i <= tempo_de_exame);
             puts("Laudo finalizado.");
 
-            uT = uT + tempo_de_exame;
+            change_occupation(radiologista, i, 0); // Muda ocupação para "0" (livre).
+
+            print_fila_registro(fila_para_laudo);
 
 
         }
-   
+
     }
 
 
 
 
 
-
+    return 0;
 }
