@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 
 struct _paciente {
@@ -42,7 +41,13 @@ struct _occupation {
 struct _registro {
     int id;
     int tempo;
-    char condition[12];
+    char condition[30];
+};
+
+struct _tempos {
+    int tempo_entrada;
+    int tempo_saida;
+    char patologia[30];
 };
 
 // Criação de novo paciente.
@@ -109,13 +114,15 @@ Fila *create_fila() {
 }
 
 // Verifica se lista está vazia.
-bool list_is_empty(const Lista *L) {
-    return L->size == 0;
+int list_is_empty(const Lista *L) {
+    if (L->size == 0) return 0;
+    else return 1;
 }
 
 // Verifica se fila está vazia.
-bool fila_is_empty(const Fila *F) {
-     return F->front == NULL;
+int fila_is_empty(const Fila *F) {
+    if (F->front == NULL) return 0;
+    else return 1;
 }
 
 // Adiciona elemento no começo da lista.
@@ -129,7 +136,7 @@ void add_no_inicio(Lista *L, Paciente *novoPaciente) {
 
     n->next = L->begin;
 
-    if (list_is_empty(L)) {
+    if ((list_is_empty(L)) == 0) {
         L->end = n;
     }
     else {
@@ -152,10 +159,8 @@ void enfileirar_id(Fila *F, int id) {
     node->registro = NULL;
     node->next = NULL;
 
-    if (fila_is_empty(F))
-        F->front = node;
-    else
-        F->rear->next = node;
+    if ((fila_is_empty(F)) == 0) F->front = node;
+    else F->rear->next = node;
 
     F->rear = node;
 }
@@ -173,18 +178,14 @@ void enfileirar_registro(Fila *F, Registro *registro) {
     node->registro = registro;
     node->next = NULL;
 
-    if (fila_is_empty(F))
-        F->front = node;
-    else
-        F->rear->next = node;
+    if ((fila_is_empty(F)) == 0)F->front = node;
+    else F->rear->next = node;
 
     F->rear = node;
 }
 
 // Retira elemento no início da fila e o retorna.
 int desenfileirar_id(Fila *F) {
-
-    assert(!fila_is_empty(F));
 
     int id = F->front->id;
     FilaNode *f = F->front; // Store for removal
@@ -200,8 +201,6 @@ int desenfileirar_id(Fila *F) {
 
 // Desenfileira registro.
 void desenfileirar_registro(Fila *F) {
-
-   assert(!fila_is_empty(F));
 
    FilaNode *f = F->front; 
 
@@ -259,28 +258,22 @@ void change_occupation(Occupation *estrutura, const int i, int new_ocupation) {
 }
 
 // Retorna a patologia de acordo com suas probabilidades.
-int condition() {
+char* condition() {
     int n = rand() % 100 + 1;
     int prob1 =  30;
     int prob2 =  50;
     int prob3 =  70;
     int prob4 =  85;
 
-    if (n <= prob1) {
-        return 1;
-    }
-    else if (n > prob1 && n <= prob2) {
-        return 2;
-    }
-    else if (n > prob2 && n <= prob3) {
-        return 3;
-    }
-    else if (n > prob3 && n <= prob4) {
-        return 4;
-    }
-    else {
-        return 5;
-    }
+    static char c[30];
+
+    if (n <= prob1) strcpy(c, "Saúde Normal");
+    else if (n > prob1 && n <= prob2) strcpy(c, "Bronquite");
+    else if (n > prob2 && n <= prob3) strcpy(c, "Pneumonia");
+    else if (n > prob3 && n <= prob4) strcpy(c, "Fratura de Fêmur ");
+    else strcpy(c, "Apendicite");
+
+    return c;
 }
 
 // Função para imprimir fila para exame.
@@ -324,3 +317,51 @@ void print_lista(Lista *l) {
    printf("\n"); 
 }
 
+
+void insert_tempo_entrada(Tempos *t, int tempo_entrada) {
+    t->tempo_entrada = tempo_entrada;
+}
+
+
+void insert_tempo_saida(Tempos *t, int tempo_saida) {
+    t->tempo_saida = tempo_saida;
+}
+
+
+void insert_tempo_patologia(Tempos *t, char patologia[]) {
+    strcpy(t->patologia, patologia);
+}
+
+
+Tempos **create_array_tempos(int tamanho) {
+    Tempos **tempos = (Tempos**) calloc(tamanho, sizeof(Tempos*));
+
+    if (tempos == NULL) {
+        puts("Falha na alocação de novo array.");
+        exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i < tamanho; i++) {
+        tempos[i] = create_tempos();
+    }
+
+    return tempos;
+
+}
+
+
+
+Tempos* create_tempos() {
+    Tempos *t = (Tempos*) calloc(1, sizeof(Tempos));
+    t->tempo_entrada = 0;
+    t->tempo_saida = 0;
+    strcpy(t->patologia, NULL);
+
+    return t;
+}
+
+
+int tempo_laudo(Tempos *tempos) {
+    int t = (tempos->tempo_saida) - (tempos->tempo_entrada);
+    return t;
+}
