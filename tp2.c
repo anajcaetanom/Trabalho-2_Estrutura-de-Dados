@@ -48,6 +48,7 @@ struct _tempos {
     int tempo_entrada;
     int tempo_saida;
     char patologia[30];
+    int id;
 };
 
 // Criação de novo paciente.
@@ -200,17 +201,18 @@ int desenfileirar_id(Fila *F) {
 }
 
 // Desenfileira registro.
-void desenfileirar_registro(Fila *F) {
+Registro *desenfileirar_registro(Fila *F) {
 
-   FilaNode *f = F->front; 
+    Registro *r = F->front->registro;
+    FilaNode *f = F->front; 
 
-   if (F->front != F->rear)
-      F->front = F->front->next;
-   else
-      F->front = F->rear = NULL;
+    if (F->front != F->rear)
+        F->front = F->front->next;
+    else
+        F->front = F->rear = NULL;
 
-   free(f);
-   
+    free(f);
+    return r;
 }
 
 // Criação de registro.
@@ -236,7 +238,7 @@ Occupation *create_array(int tamanho) {
     Occupation *aparelhos = (Occupation*) calloc(tamanho, sizeof(Occupation));
 
     if (aparelhos == NULL) {
-        puts("Falha na alocação de novo array.");
+        puts("Falha na alocação de novo array. Linha 241.");
         exit(EXIT_FAILURE);
     }
 
@@ -270,7 +272,7 @@ char* condition() {
     if (n <= prob1) strcpy(c, "Saúde Normal");
     else if (n > prob1 && n <= prob2) strcpy(c, "Bronquite");
     else if (n > prob2 && n <= prob3) strcpy(c, "Pneumonia");
-    else if (n > prob3 && n <= prob4) strcpy(c, "Fratura de Fêmur ");
+    else if (n > prob3 && n <= prob4) strcpy(c, "Fratura de Fêmur");
     else strcpy(c, "Apendicite");
 
     return c;
@@ -318,50 +320,93 @@ void print_lista(Lista *l) {
 }
 
 
-void insert_tempo_entrada(Tempos *t, int tempo_entrada) {
-    t->tempo_entrada = tempo_entrada;
+void insert_entrada(Tempos *array, int tempo_entrada, int index, int id ,char patologia[]) {
+    array[index].tempo_entrada = tempo_entrada;
+    strcpy(array[index].patologia, patologia);
+    array[index].id = id;
 }
 
 
-void insert_tempo_saida(Tempos *t, int tempo_saida) {
-    t->tempo_saida = tempo_saida;
+void insert_tempo_saida(Tempos *array, int tempo_saida, int index) {
+    array[index].tempo_saida = tempo_saida;
 }
 
 
-void insert_tempo_patologia(Tempos *t, char patologia[]) {
-    strcpy(t->patologia, patologia);
-}
-
-
-Tempos **create_array_tempos(int tamanho) {
-    Tempos **tempos = (Tempos**) calloc(tamanho, sizeof(Tempos*));
+Tempos *create_array_tempos(int tamanho) {
+    Tempos *tempos = (Tempos*)malloc(tamanho * sizeof(Tempos));
 
     if (tempos == NULL) {
-        puts("Falha na alocação de novo array.");
+        puts("Falha na alocação de novo array. create_array_tempos.");
         exit(EXIT_FAILURE);
-    }
+    } 
 
     for (int i = 0; i < tamanho; i++) {
-        tempos[i] = create_tempos();
+        tempos[i].tempo_entrada = 0;
+        tempos[i].tempo_saida = 0;
+        strcpy(tempos[i].patologia, "0");
+        tempos[i].id = 0;
     }
 
     return tempos;
-
 }
 
 
+int array_is_empty(Tempos *array, int index) {
+    if ((array[index].tempo_entrada == 0) && (array[index].tempo_saida == 0) && strcmp(array[index].patologia, "0") == 0) return 0;
 
-Tempos* create_tempos() {
-    Tempos *t = (Tempos*) calloc(1, sizeof(Tempos));
-    t->tempo_entrada = 0;
-    t->tempo_saida = 0;
-    strcpy(t->patologia, NULL);
+    return 1;
+}
 
+
+int empty_array_index(Tempos *array, int tamanho) {
+    for (int i = 0; i <  tamanho; i++) {
+        if (array_is_empty(array, i) == 0) return i;
+    }
+    
+    return -1;
+}
+
+
+int tempo_laudo(Tempos *array, int index) {
+    int t = (array[index].tempo_saida) - (array[index].tempo_entrada);
     return t;
 }
 
 
-int tempo_laudo(Tempos *tempos) {
-    int t = (tempos->tempo_saida) - (tempos->tempo_entrada);
-    return t;
+int get_id_registro(Registro *r) { 
+    return r->id;
 }
+
+
+int index_from_id(Tempos *array, int id, int tamanho_array) {
+    for (int i = 0; i < tamanho_array; i++) {
+        if (array[i].id == id) return i;
+    }
+
+    return -1;
+}
+
+
+void print_array(Tempos *array, int index) {
+    int tE, tS, id;
+    char p[30];
+
+    tE = array[index].tempo_entrada;
+    tS = array[index].tempo_saida;
+    id = array[index].id;
+    strcpy(p, array[index].patologia);
+    printf("\nTempo de entrada: %d\nTempo de saída: %d\nID: %d\nDiagnostico: %s\n",tE, tS, id, p);
+
+}
+/// conserta isso aq
+char *get_diagnostico_registro(Registro *r) {
+    char aux[30];
+    strcpy(aux, r->condition);
+    return aux;
+}
+
+
+
+
+
+

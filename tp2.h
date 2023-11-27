@@ -49,7 +49,7 @@ void enfileirar_registro(Fila *F, Registro *registro);
 int desenfileirar_id(Fila *F);
 
 // Desenfileira registro.
-void desenfileirar_registro(Fila *F);
+Registro *desenfileirar_registro(Fila *F);
 
 // Criação de registro.
 Registro *create_registro(const int id, const int tempo, const char condition[]);
@@ -78,13 +78,34 @@ void print_lista(Lista *l);
 // Função para imprimir fila de laudo.
 void print_fila_registro(Fila *F);
 
-Tempos **create_array_tempos(int tamanho);
+
+Tempos *create_array_tempos(int tamanho);
 
 
-Tempos* create_tempos();
+void insert_entrada(Tempos *array, int tempo_entrada, int index, int id ,char patologia[]);
 
 
-int tempo_laudo(Tempos *tempos);
+void insert_tempo_saida(Tempos *array, int tempo_saida, int index);
 
+
+int array_is_empty(Tempos *array, int index);
+
+
+int empty_array_index(Tempos *array, int tamanho);
+
+
+int tempo_laudo(Tempos *array, int index);
+
+
+int get_id_registro(Registro *r);
+
+
+int index_from_id(Tempos *array, int id, int tamanho_array);
+
+
+void print_array(Tempos *array, int index);
+
+
+char *get_diagnostico_registro(Registro *r)
 
 #endif
