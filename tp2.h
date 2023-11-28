@@ -78,34 +78,39 @@ void print_lista(Lista *l);
 // Função para imprimir fila de laudo.
 void print_fila_registro(Fila *F);
 
-
+// Cria uma array de struct Tempos.
 Tempos *create_array_tempos(int tamanho);
 
-
+// Insere tempo de entrada.
 void insert_entrada(Tempos *array, int tempo_entrada, int index, int id ,char patologia[]);
 
-
+// Insere tempo de saida.
 void insert_tempo_saida(Tempos *array, int tempo_saida, int index);
 
-
+// Verifica se array está vazia.
 int array_is_empty(Tempos *array, int index);
 
-
+// Retorna indice do elemento que está vazio.
 int empty_array_index(Tempos *array, int tamanho);
 
-
+// Calcula tempo de laudo.
 int tempo_laudo(Tempos *array, int index);
 
-
+// Retorna id de um registro.
 int get_id_registro(Registro *r);
 
-
+// Retorna o indice de um elemento que contem um id especifico.
 int index_from_id(Tempos *array, int id, int tamanho_array);
 
-
+// Imprime uma array.
 void print_array(Tempos *array, int index);
 
+// Retorna o diagnostico contido em um registro.
+char *get_diagnostico_registro(Registro *r);
 
-char *get_diagnostico_registro(Registro *r)
+// Libera memoria de uma fila.
+void free_fila(Fila *F);
+
+
 
 #endif

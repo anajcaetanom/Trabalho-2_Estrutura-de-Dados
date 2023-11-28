@@ -269,10 +269,10 @@ char* condition() {
 
     static char c[30];
 
-    if (n <= prob1) strcpy(c, "Saúde Normal");
+    if (n <= prob1) strcpy(c, "Saude Normal");
     else if (n > prob1 && n <= prob2) strcpy(c, "Bronquite");
     else if (n > prob2 && n <= prob3) strcpy(c, "Pneumonia");
-    else if (n > prob3 && n <= prob4) strcpy(c, "Fratura de Fêmur");
+    else if (n > prob3 && n <= prob4) strcpy(c, "Fratura de Femur");
     else strcpy(c, "Apendicite");
 
     return c;
@@ -319,19 +319,19 @@ void print_lista(Lista *l) {
    printf("\n"); 
 }
 
-
+// Insere tempo de entrada.
 void insert_entrada(Tempos *array, int tempo_entrada, int index, int id ,char patologia[]) {
     array[index].tempo_entrada = tempo_entrada;
     strcpy(array[index].patologia, patologia);
     array[index].id = id;
 }
 
-
+// Insere tempo de saida.
 void insert_tempo_saida(Tempos *array, int tempo_saida, int index) {
     array[index].tempo_saida = tempo_saida;
 }
 
-
+// Cria uma array de struct Tempos.
 Tempos *create_array_tempos(int tamanho) {
     Tempos *tempos = (Tempos*)malloc(tamanho * sizeof(Tempos));
 
@@ -350,14 +350,14 @@ Tempos *create_array_tempos(int tamanho) {
     return tempos;
 }
 
-
+// Verifica se array está vazia.
 int array_is_empty(Tempos *array, int index) {
     if ((array[index].tempo_entrada == 0) && (array[index].tempo_saida == 0) && strcmp(array[index].patologia, "0") == 0) return 0;
 
     return 1;
 }
 
-
+// Retorna indice do elemento que está vazio.
 int empty_array_index(Tempos *array, int tamanho) {
     for (int i = 0; i <  tamanho; i++) {
         if (array_is_empty(array, i) == 0) return i;
@@ -366,18 +366,18 @@ int empty_array_index(Tempos *array, int tamanho) {
     return -1;
 }
 
-
+// Calcula tempo de laudo.
 int tempo_laudo(Tempos *array, int index) {
     int t = (array[index].tempo_saida) - (array[index].tempo_entrada);
     return t;
 }
 
-
+// Retorna id de um registro.
 int get_id_registro(Registro *r) { 
     return r->id;
 }
 
-
+// Retorna o indice de um elemento que contem um id especifico.
 int index_from_id(Tempos *array, int id, int tamanho_array) {
     for (int i = 0; i < tamanho_array; i++) {
         if (array[i].id == id) return i;
@@ -386,7 +386,7 @@ int index_from_id(Tempos *array, int id, int tamanho_array) {
     return -1;
 }
 
-
+// Imprime uma array.
 void print_array(Tempos *array, int index) {
     int tE, tS, id;
     char p[30];
@@ -395,16 +395,29 @@ void print_array(Tempos *array, int index) {
     tS = array[index].tempo_saida;
     id = array[index].id;
     strcpy(p, array[index].patologia);
-    printf("\nTempo de entrada: %d\nTempo de saída: %d\nID: %d\nDiagnostico: %s\n",tE, tS, id, p);
+    printf("\nTempo de entrada: %d\nTempo de saida: %d\nID: %d\nDiagnostico: %s\n",tE, tS, id, p);
 
 }
 
+// Retorna o diagnostico contido em um registro.
 char *get_diagnostico_registro(Registro *r) {
     char *aux = (char*)calloc((strlen(r->condition) + 1), sizeof(char));
     strcpy(aux, r->condition);
     return aux;
 }
 
+// Libera memoria de uma fila.
+void free_fila(Fila *F)
+{
+   FilaNode *n = F->front;
+   while (n != NULL)
+   {
+      FilaNode *t = n->next; 
+      free(n);                
+      n = t;                  
+   }
+   free(F); 
+}
 
 
 

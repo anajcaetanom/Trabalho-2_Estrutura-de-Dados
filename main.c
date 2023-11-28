@@ -7,26 +7,24 @@
 int main() {
     srand(time(NULL));
     char nomeArquivo[30], nome[30], cpf[20], p[30];
-    int idade, r, tempo_de_exame, tempo, id_retirado, index, TempoMedioLaudo, SN, BQ, PN, FF, AP;
-    int id, uT, qtd, SumTempoLaudo, sSN, sBQ, sPN, sFF, sAP, qSN, qBQ, qPN, qFF, qAP = 0;
+    int idade, r, tempo_de_exame, tempo, id_retirado, index, TempoMedioLaudo;
+    int id, uT, qtd, SumTempoLaudo = 0;
     
     Lista *lista_de_pacientes = create_lista(); // Criação da lista de pacientes.
     Fila *fila_para_exame = create_fila(); // Criação da fila para exame.
 
     // Abrindo o arquivo e armazenando os dados.
-    /* printf("Insira nome do arquivo (com a extensão): ");
-    scanf("%s", nomeArquivo); */
-    FILE *arquivo = fopen("input.txt", "r");
+    printf("Insira nome do arquivo (com a extensão): ");
+    scanf("%s", nomeArquivo); 
+    FILE *arquivo = fopen(nomeArquivo, "r");
 
     if (arquivo == NULL) {
         puts("Erro ao abrir arquivo.");
         exit(EXIT_FAILURE);
     }
 
-    /* SIMULAÇÃO */
-
     /* CHEGADA DE PACIENTES */
-    while ((fscanf(arquivo, "%30[^\n]\n%15[^\n]\n%d\n", nome, cpf, &idade) == 3) && (uT <= 43200)) {
+    while ((fscanf(arquivo, "%30[^\n]\n%15[^\n]\n%d\n", nome, cpf, &idade) == 3)) {
 
         do {
             r = rand() % 10 + 1;
@@ -58,7 +56,7 @@ int main() {
 
                 tempo_de_exame = (rand() % 6 + 5);
 
-                id_retirado = desenfileirar_id(fila_para_exame);
+                id_retirado = desenfileirar_id(fila_para_exame); // Retira id da fila para exame.
 
                 change_occupation(aparelhos, i, 1); // Muda ocupação para "1" (ocupado).
 
@@ -67,12 +65,6 @@ int main() {
                 tempo = uT + tempo_de_exame;
 
                 strcpy(p, condition());
-
-                if (strcmp(p, "Saúde Normal") == 0) qSN++;
-                else if (strcmp(p, "Bronquite") == 0) qBQ++;
-                else if (strcmp(p, "Pneumonia") == 0) qPN++;
-                else if (strcmp(p, "Fratura de Fêmur") == 0) qFF++;
-                else qAP++;
 
                 Registro *registro = create_registro(id_retirado, tempo, p); 
 
@@ -87,19 +79,19 @@ int main() {
 
                 insert_entrada(array_tempos, tempo, index, id_retirado, p); // Insere tempo de entrada na fila para laudo, id do paciente e patologia em uma struct vazia.
 
-                print_array(array_tempos, index);
-
                 uT = tempo;
 
                 change_occupation(aparelhos, i, 0); // Muda ocupação para "0" (livre).
 
                 uT++; // Incremento na unidade de tempo.  
             }
-            
-
         }
     }   
 
+    free_fila(fila_para_exame); // Liberação de memória.
+    free(aparelhos);
+
+    printf("\n%d\n", qtd);
     /* REALIZAÇÃO DE LAUDOS */
 
     Occupation *radiologista = create_array(3); //
@@ -116,17 +108,7 @@ int main() {
 
             insert_tempo_saida(array_tempos, uT, index); // Insere tempo que o paciente saiu da fila para laudo.
 
-            if (strcmp(p, "Saúde Normal") == 0) sSN += tempo_laudo(array_tempos, index);
-            else if (strcmp(p, "Bronquite") == 0) sBQ = tempo_laudo(array_tempos, index);
-            else if (strcmp(p, "Pneumonia") == 0) sPN = tempo_laudo(array_tempos, index);
-            else if (strcmp(p, "Fratura de Fêmur") == 0) sFF = tempo_laudo(array_tempos, index);
-            else sAP = tempo_laudo(array_tempos, index);
-
-            print_array(array_tempos, index);
-
             SumTempoLaudo += tempo_laudo(array_tempos, index); // Acrescenta tempo do laudo na variavel auxiliar para calculo da media.
-
-            printf("\nSum: %d\n", SumTempoLaudo);
 
             int tempo_de_exame = rand() % 20 + 10; 
 
@@ -135,29 +117,15 @@ int main() {
             for (int j = 0; j <= tempo_de_exame; j++) uT++; // Preparação do laudo.
 
             change_occupation(radiologista, i, 0); // Muda ocupação para "0" (livre).
-
         }
-
         uT++;
-
     }
 
+    free_fila(fila_para_laudo);
+    free(radiologista);
+
     TempoMedioLaudo = SumTempoLaudo/qtd;
-    SN = sSN/qSN;
-    BQ = sBQ/qBQ;
-    PN = sPN/qPN;
-    FF = sFF/qFF;
-    AP = sAP/qAP;
-
-    printf("\nTempo médio geral na fila de laudo: %d\n", TempoMedioLaudo);
-    printf("\nTempo médio do diagnostico 'Saude Normal' na fila de laudo: %d", SN);
-    printf("\nTempo médio do diagnostico 'Bronquite' na fila de laudo: %d", BQ);
-    printf("\nTempo médio do diagnostico 'Pneumonia' na fila de laudo: %d", PN);
-    printf("\nTempo médio do diagnostico 'Fratura de Fêmur' na fila de laudo: %d", FF);
-    printf("\nTempo médio do diagnostico 'Apendicite' na fila de laudo: %d", AP);
-
-
-
+    printf("Tempo medio geral na fila de laudo: %d\n", TempoMedioLaudo);
 
     return 0;
 }
