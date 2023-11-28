@@ -398,9 +398,9 @@ void print_array(Tempos *array, int index) {
     printf("\nTempo de entrada: %d\nTempo de saída: %d\nID: %d\nDiagnostico: %s\n",tE, tS, id, p);
 
 }
-/// conserta isso aq
+
 char *get_diagnostico_registro(Registro *r) {
-    char aux[30];
+    char *aux = (char*)calloc((strlen(r->condition) + 1), sizeof(char));
     strcpy(aux, r->condition);
     return aux;
 }

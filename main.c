@@ -51,9 +51,8 @@ int main() {
 
     Tempos *array_tempos = create_array_tempos(qtd);
 
-    for (int i = 0; i < 5; i++) {
-
-        /* REALIZAÇÃO DO EXAME DE RAIO-X */
+    /* REALIZAÇÃO DO EXAME DE RAIO-X */
+    for (int i = 0; i < qtd; i++) {
         if ((get_occupation(aparelhos, i)) == 0) {
             if ((fila_is_empty(fila_para_exame)) == 1) {
 
@@ -95,10 +94,9 @@ int main() {
                 change_occupation(aparelhos, i, 0); // Muda ocupação para "0" (livre).
 
                 uT++; // Incremento na unidade de tempo.  
-            
-            
             }
             
+
         }
     }   
 
