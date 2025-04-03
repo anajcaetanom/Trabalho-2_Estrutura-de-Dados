@@ -51,4 +51,4 @@ This project is open-source and can be freely modified and distributed.
 
 ---
 
-✨ Developed in C for educational and learning purposes! 🚀
+✨ This project was developed as part of the Data Structures course during the 2023/2 semester.
