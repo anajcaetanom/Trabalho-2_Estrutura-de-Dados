@@ -45,10 +45,6 @@ The project is organized into the following files:
 - Expand support for additional medical examinations.
 - Develop a graphical user interface (GUI) for better user interaction.
 
-## 📄 License
-
-This project is open-source and can be freely modified and distributed.
-
 ---
 
 ✨ This project was developed as part of the Data Structures course during the 2023/2 semester.
